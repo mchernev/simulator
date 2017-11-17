@@ -16,9 +16,9 @@ namespace ObjectInteractionSimulator
         private float speedY;//dy
         private float radius;
         private float mass;
-        //TODO: maybe add Color variable
+        private Tuple<int, int, int> color;
 
-        public PhysicalObject(float centerX, float centerY, float angle, float speed, float radius, float mass)
+        public PhysicalObject(float centerX, float centerY, float angle, float speed, float radius, float mass, Tuple<int, int, int> color)
         {
             CenterX = centerX;
             CenterY = centerY;
@@ -27,16 +27,19 @@ namespace ObjectInteractionSimulator
             SetAxisSpeeds(angle, speed);
             Radius = radius;
             Mass = mass;
+            Color = color;
         }
 
-        private void SetAxisSpeeds(float angle, float speed)
+        public void SetAxisSpeeds(float angle, float speed)
         {
-            double cos = Math.Cos((Math.PI / 180) * angle);
-            double sin = Math.Sin((Math.PI / 180) * angle);
-            cos = Math.Round(cos, 7);
-            sin = Math.Round(sin, 7);
-            SpeedX = speed * (float)cos;
-            speedY = -speed * (float)sin;
+            Angle = angle;
+            Speed = speed;
+            float cos = (float)Math.Cos((Math.PI / 180) * angle);
+            float sin = (float)Math.Sin((Math.PI / 180) * angle);
+            cos = (float)Math.Round(cos, 6);
+            sin = (float)Math.Round(sin, 6);
+            SpeedX = speed * cos;
+            speedY = -speed * sin;
         }
 
         public float CenterX
@@ -69,7 +72,7 @@ namespace ObjectInteractionSimulator
             {
                 return speedX;
             }
-            set
+            private set
             {
                 speedX = value;
             }
@@ -81,7 +84,7 @@ namespace ObjectInteractionSimulator
             {
                 return speedY;
             }
-            set
+            private set
             {
                 speedY = value;
             }
@@ -95,7 +98,10 @@ namespace ObjectInteractionSimulator
             }
             set
             {
-                radius = value;
+                if (value > 0)
+                    radius = value;
+                else
+                    radius = 1;
             }
         }
 
@@ -105,8 +111,18 @@ namespace ObjectInteractionSimulator
             {
                 return angle;
             }
-            set
+            private set
             {
+                //0 < angle < 360
+                if(value < 0)
+                {
+                    value = value % 360;
+                    value = value + 360;
+                }
+                else
+                {
+                    value = value % 360;
+                }
                 angle = value;
             }
         }
@@ -117,9 +133,12 @@ namespace ObjectInteractionSimulator
             {
                 return speed;
             }
-            set
+            private set
             {
-                speed = value;
+                if (value > 0)
+                    speed = value;
+                else
+                    speed = 0;
             }
         }
 
@@ -131,7 +150,22 @@ namespace ObjectInteractionSimulator
             }
             set
             {
-                mass = value;
+                if (value > 0)
+                    mass = value;
+                else
+                    mass = 1;
+            }
+        }
+
+        public Tuple<int, int, int> Color
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                color = value;
             }
         }
     }

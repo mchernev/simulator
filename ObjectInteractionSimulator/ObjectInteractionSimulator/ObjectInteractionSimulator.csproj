@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collision.cs" />
     <Compile Include="PhysicalObject.cs" />
     <Compile Include="Simulator.cs">
       <SubType>Form</SubType>
