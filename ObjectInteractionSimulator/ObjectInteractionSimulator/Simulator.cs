@@ -33,18 +33,39 @@ namespace ObjectInteractionSimulator
             //objects.Add(new PhysicalObject(centerX: 100, centerY: 140, angle: -120, speed: 20, radius: 30, mass: 1, color: Tuple.Create(255, 25, 255)));
             //objects.Add(new PhysicalObject(centerX: 30, centerY: 200, angle: 180, speed: 1, radius: 30, mass: 1, color: Tuple.Create(255, 25, 255)));
 
+            //objects.Add(new PhysicalObject(centerX: 160, centerY: 400, angle: 300, speed: 1, radius: 30, mass: 1, color: Tuple.Create(255, 25, 255)));//purple
+            //objects.Add(new PhysicalObject(centerX: 200, centerY: 486.6f, angle: 90, speed: 1, radius: 30, mass: 1, color: Tuple.Create(25, 25, 255)));//blue
+            //objects.Add(new PhysicalObject(centerX: 240, centerY: 400, angle: 240, speed: 1, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));//red
 
-            objects.Add(new PhysicalObject(centerX: 400, centerY: 40, angle: 0, speed: 0, radius: 30, mass: 1000, color: Tuple.Create(25, 225, 25)));
-            Random rnd = new Random();
-            
-            for (int i = 100; i < 700; i += 30)
+            //objects.Add(new PhysicalObject(centerX: 100, centerY: 400, angle: 0, speed: 2, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));
+            //objects.Add(new PhysicalObject(centerX: 240, centerY: 400, angle: 180, speed: 3, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));
+
+            for (int i = 0; i < 6; ++i)
             {
-                for(int k = 100; k < 700; k += 30)
-                {
-                    int r = rnd.Next(0, 360);
-                    objects.Add(new PhysicalObject(centerX: i, centerY: k, angle: r, speed: 8, radius: 5, mass: 1, color: Tuple.Create(255, 25, 255)));
-                }
+                objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 400, angle: 0, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
             }
+
+            for (int i = 0; i < 6; ++i)
+            {
+                objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 500, angle: 0, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
+            }
+
+            for (int i = 0; i < 6; ++i)
+            {
+                objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 600, angle: 15, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
+            }
+
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 40, angle: 0, speed: 0, radius: 30, mass: 1000, color: Tuple.Create(25, 225, 25)));
+            //Random rnd = new Random();
+
+            //for (int i = 100; i < 700; i += 50)
+            //{
+            //    for (int k = 100; k < 700; k += 50)
+            //    {
+            //        int r = rnd.Next(0, 360);
+            //        objects.Add(new PhysicalObject(centerX: i, centerY: k, angle: r, speed: 8, radius: 5, mass: 1, color: Tuple.Create(255, 25, 255)));
+            //    }
+            //}
 
             objects.ForEach((item) => this.Paint += new PaintEventHandler((sender, e) => PaintObject(sender, e, item)));
             this.Size = new Size(816, 839);
@@ -69,13 +90,13 @@ namespace ObjectInteractionSimulator
             //SolidBrush brush = new SolidBrush(ColorTranslator.FromHtml("#ff00ff"));
             graphics.FillEllipse(pthGrBrush, rect);
 
-            //draw movement arrow
-            // Create pen.
+            ////draw movement arrow
+            //// Create pen.
             //Pen blackPen = new Pen(Color.Black, 5);
-            // Create points that define line.
+            //// Create points that define line.
             //Point point1 = new Point((int)po.CenterX, (int)po.CenterY);
             //Point point2 = new Point((int)po.CenterX + (int)po.SpeedX * 20, (int)po.CenterY + (int)po.SpeedY * 20);
-            // Draw line to screen.
+            //// Draw line to screen.
             //e.Graphics.DrawLine(blackPen, point1, point2);
         }
 
@@ -92,6 +113,9 @@ namespace ObjectInteractionSimulator
             {
                 BounceOffHorizontalWall(po);
             }
+
+            //Try detecting collision here
+            //DetectCollisions();
 
             po.CenterX += po.SpeedX;
             po.CenterY += po.SpeedY;
@@ -127,12 +151,12 @@ namespace ObjectInteractionSimulator
         }
 
         private void DetectCollisions()
-        {
+        {   
             for (int i = 0; i < objects.Count; ++i)
             {
                 for (int k = i + 1; k < objects.Count; ++k)
                 {
-                    if (dist2(objects[i].CenterX - objects[k].CenterX, objects[i].CenterY - objects[k].CenterY) < (objects[i].Radius + objects[k].Radius) * (objects[i].Radius + objects[k].Radius))
+                    if (dist2(objects[i].CenterX + objects[i].SpeedX - objects[k].CenterX - objects[k].SpeedX, objects[i].CenterY + objects[i].SpeedY - objects[k].CenterY - objects[k].SpeedY) < (objects[i].Radius + objects[k].Radius) * (objects[i].Radius + objects[k].Radius))
                     {
                         Collision collision = new Collision();
                         collision.CalculateCollision(objects[i], objects[k]);

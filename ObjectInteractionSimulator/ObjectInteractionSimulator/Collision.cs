@@ -43,6 +43,9 @@ namespace ObjectInteractionSimulator
             po1.SetAxisSpeeds(alpha, v1);
             po2.SetAxisSpeeds(beta, v2);
 
+            Console.WriteLine("InitSpeed1: " + v1);
+            Console.WriteLine("InitSpeed2: " + v2);
+
             //Momentum must be calculated after angle shift
             CalculateMomentum();
             Console.WriteLine("Momentum: " + momentum);
@@ -132,6 +135,11 @@ namespace ObjectInteractionSimulator
 
             float D = SquareF(2 * momentum * m2) - 4 * (SquareF(m2) + m1 * m2) * (SquareF(momentum) + SquareF(m1) * SquareF((float)Math.Sin(Angle(alpha))) * SquareF(v1) + (m1 * m2 * SquareF((float)Math.Sin(Angle(beta))) * SquareF(v2) - energy * m1));
             Console.WriteLine("D: " + D);
+            if(D < 0)
+            {
+                D = 0;
+                Console.WriteLine("ERROR: D is negative");
+            }
             float x1, x2;
             x1 = ((2 * momentum * m2) + (float)Math.Sqrt(D)) / (2 * (SquareF(m2) + m1 * m2));
             x2 = ((2 * momentum * m2) - (float)Math.Sqrt(D)) / (2 * (SquareF(m2) + m1 * m2));
@@ -165,19 +173,22 @@ namespace ObjectInteractionSimulator
                 if (u > speed)//crashes if u > NewSpeed
                 {
                     u = speed;
-                    Console.WriteLine("    ERROR: LOOK AT CALCULATE_NEW_ANGLE; Speeds are wrongly calculated    ");
+                    //Console.WriteLine("    ERROR: LOOK AT CALCULATE_NEW_ANGLE; Speeds are wrongly calculated    ");
                 }
-
-                angle = (float)Math.Acos(u / speed);
-
+                if(Math.Abs(u) / Math.Abs(speed) > 1)
+                {
+                    u = -speed;
+                }
+                angle = (float)Math.Acos(u / speed);//angle is in rad
+                
                 if (speedY > 0)
                 {
                     angle = 2 * (float)Math.PI - angle;
                 }
             }
-            angle = (float)Math.Round(angle * (180 / (float)Math.PI), 6);
+            angle = (float)Math.Round(angle * (180 / (float)Math.PI), 6);//convert angle to deg
 
-            return angle % 360; //if angle == 360 return 0
+            return angle;
         }
 
         private float Angle(float angle)//returns angle in rad
