@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collision.cs" />
+    <Compile Include="Gravity.cs" />
     <Compile Include="PhysicalObject.cs" />
     <Compile Include="Simulator.cs">
       <SubType>Form</SubType>

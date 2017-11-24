@@ -18,6 +18,8 @@ namespace ObjectInteractionSimulator
 
         List<PhysicalObject> objects = new List<PhysicalObject>();
 
+        Gravity gravity;
+
         public Simulator()
         {
             InitializeComponent();
@@ -40,20 +42,23 @@ namespace ObjectInteractionSimulator
             //objects.Add(new PhysicalObject(centerX: 100, centerY: 400, angle: 0, speed: 2, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));
             //objects.Add(new PhysicalObject(centerX: 240, centerY: 400, angle: 180, speed: 3, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));
 
-            for (int i = 0; i < 6; ++i)
-            {
-                objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 400, angle: 0, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
-            }
+            objects.Add(new PhysicalObject(centerX: 400, centerY: 300, angle: 0, speed: 0.6f, radius: 30, mass: 10000000, color: Tuple.Create(255, 25, 25)));
+            objects.Add(new PhysicalObject(centerX: 400, centerY: 400, angle: 0, speed: 0, radius: 30, mass: 1000000000000, color: Tuple.Create(255, 25, 25)));
 
-            for (int i = 0; i < 6; ++i)
-            {
-                objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 500, angle: 0, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
-            }
+            //for (int i = 0; i < 6; ++i)
+            //{
+            //    objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 400, angle: 0, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
+            //}
 
-            for (int i = 0; i < 6; ++i)
-            {
-                objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 600, angle: 15, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
-            }
+            //for (int i = 0; i < 6; ++i)
+            //{
+            //    objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 500, angle: 0, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
+            //}
+
+            //for (int i = 0; i < 6; ++i)
+            //{
+            //    objects.Add(new PhysicalObject(centerX: i * 50 + 30, centerY: 600, angle: 15, speed: 4, radius: 20, mass: 1, color: Tuple.Create(255, 25, 255)));
+            //}
 
             //objects.Add(new PhysicalObject(centerX: 400, centerY: 40, angle: 0, speed: 0, radius: 30, mass: 1000, color: Tuple.Create(25, 225, 25)));
             //Random rnd = new Random();
@@ -70,6 +75,10 @@ namespace ObjectInteractionSimulator
             objects.ForEach((item) => this.Paint += new PaintEventHandler((sender, e) => PaintObject(sender, e, item)));
             this.Size = new Size(816, 839);
             this.DoubleBuffered = true;
+
+            gravity = new Gravity(objects);
+
+            Interval_Label.Text = timer.Interval.ToString();
         }
 
         private void PaintObject(object sender, PaintEventArgs e, PhysicalObject po)
@@ -147,7 +156,12 @@ namespace ObjectInteractionSimulator
         private void timer_Tick(object sender, EventArgs e)
         {
             objects.ForEach((item) => MoveObject(item));
+            objects.ForEach((item) => gravity.ApplyGravityOn(item));
             DetectCollisions();
+            //tick every 15 ms; acc = how much speed is gained in 15 ms;
+            //y = 6.67 * 10^(-11)N.m^2/kg^2
+            //F = y * (m1 * m2) / r^2
+            //F = ma
         }
 
         private void DetectCollisions()
@@ -170,5 +184,24 @@ namespace ObjectInteractionSimulator
             return a * a + b * b;
         }
 
+        private void Interval_Label_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Enter_Interval_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Set_Interval_Click(object sender, EventArgs e)
+        {
+            int i;
+            int.TryParse(Enter_Interval.Text, out i);
+            if (i == 0)
+                i = 15;
+            timer.Interval = i;
+            Interval_Label.Text = i.ToString();
+        }
     }
 }
