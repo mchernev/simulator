@@ -52,8 +52,8 @@ namespace ObjectInteractionSimulator
             {
                 if (value < Radius)
                     value = Radius;
-                if (value > 800 - Radius)
-                    value = 800 - Radius;
+                //if (value > 800 - Radius)
+                    //value = 800 - Radius;
                 centerX = value;
             }
         }
@@ -68,8 +68,8 @@ namespace ObjectInteractionSimulator
             {
                 if (value < Radius)
                     value = Radius;
-                if (value > 800 - Radius)
-                    value = 800 - Radius;
+                //if (value > 800 - Radius)
+                    //value = 800 - Radius;
                 centerY = value;
             }
         }

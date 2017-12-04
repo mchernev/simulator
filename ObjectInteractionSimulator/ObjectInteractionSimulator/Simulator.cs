@@ -17,8 +17,13 @@ namespace ObjectInteractionSimulator
         Graphics graphics;
 
         List<PhysicalObject> objects = new List<PhysicalObject>();
+        List<Delegate> paintedObjects = new List<Delegate>();
 
         Gravity gravity;
+
+        int currentObjectIndex = -1;
+
+        Random random = new Random();
 
         public Simulator()
         {
@@ -42,8 +47,18 @@ namespace ObjectInteractionSimulator
             //objects.Add(new PhysicalObject(centerX: 100, centerY: 400, angle: 0, speed: 2, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));
             //objects.Add(new PhysicalObject(centerX: 240, centerY: 400, angle: 180, speed: 3, radius: 30, mass: 1, color: Tuple.Create(255, 25, 25)));
 
-            objects.Add(new PhysicalObject(centerX: 400, centerY: 300, angle: 0, speed: 0.6f, radius: 30, mass: 10000000, color: Tuple.Create(255, 25, 25)));
-            objects.Add(new PhysicalObject(centerX: 400, centerY: 400, angle: 0, speed: 0, radius: 30, mass: 1000000000000, color: Tuple.Create(255, 25, 25)));
+
+
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 300, angle: 0, speed: 0.6f, radius: 10, mass: 10000000, color: Tuple.Create(255, 25, 25)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 600, angle: 0, speed: 0.45f, radius: 15, mass: 10000000, color: Tuple.Create(255, 25, 25)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 400, angle: 0, speed: 0, radius: 30, mass: 1000000000000, color: Tuple.Create(255, 255, 0)));
+
+
+
+            //AddObject(centerX: 100, centerY: 100, angle: 0, speed: 0, radius: 30, mass: 10000);
+            //TODO: Something is wrong with the mass; very light objects not acting properly around cery heavy objects
+            //objects.Add(new PhysicalObject(centerX: 500, centerY: 500, angle: 0, speed: 0.7f, radius: 30, mass: 1, color: Tuple.Create(255, 25, 255)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 700, angle: 0, speed: 3, radius: 10, mass: 10000000, color: Tuple.Create(255, 25, 25)));
 
             //for (int i = 0; i < 6; ++i)
             //{
@@ -73,7 +88,7 @@ namespace ObjectInteractionSimulator
             //}
 
             objects.ForEach((item) => this.Paint += new PaintEventHandler((sender, e) => PaintObject(sender, e, item)));
-            this.Size = new Size(816, 839);
+            this.Size = new Size(1216, 839);
             this.DoubleBuffered = true;
 
             gravity = new Gravity(objects);
@@ -93,20 +108,11 @@ namespace ObjectInteractionSimulator
 
             //center color should be brghter; to make darker - lower values proportionally
             pthGrBrush.CenterColor = Color.FromArgb(255, po.Color.Item1, po.Color.Item2, po.Color.Item3);
-            Color[] colors = { Color.FromArgb(255, po.Color.Item1 / 2, po.Color.Item2 / 2, po.Color.Item3 / 2) };
+            Color[] colors = { Color.FromArgb(255, po.Color.Item1 / 5 * 4, po.Color.Item2 / 5 * 4, po.Color.Item3 / 5 * 4) };
             pthGrBrush.SurroundColors = colors;
 
             //SolidBrush brush = new SolidBrush(ColorTranslator.FromHtml("#ff00ff"));
             graphics.FillEllipse(pthGrBrush, rect);
-
-            ////draw movement arrow
-            //// Create pen.
-            //Pen blackPen = new Pen(Color.Black, 5);
-            //// Create points that define line.
-            //Point point1 = new Point((int)po.CenterX, (int)po.CenterY);
-            //Point point2 = new Point((int)po.CenterX + (int)po.SpeedX * 20, (int)po.CenterY + (int)po.SpeedY * 20);
-            //// Draw line to screen.
-            //e.Graphics.DrawLine(blackPen, point1, point2);
         }
 
         private void MoveObject(PhysicalObject po)
@@ -114,7 +120,7 @@ namespace ObjectInteractionSimulator
             float newBall_x = po.CenterX + po.SpeedX;
             float newBall_y = po.CenterY + po.SpeedY;
 
-            if (newBall_x < po.Radius || newBall_x > this.ClientSize.Width - po.Radius)
+            if (newBall_x < po.Radius || newBall_x > this.ClientSize.Width - po.Radius - menu.Width)
             {
                 BounceOffVerticalWall(po);
             }
@@ -151,6 +157,10 @@ namespace ObjectInteractionSimulator
         private void control_Click(object sender, EventArgs e)
         {
             timer.Enabled = !timer.Enabled;
+            if(timer.Enabled)
+                control.BackColor = Color.Red;
+            else
+                control.BackColor = Color.Lime;
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -184,6 +194,79 @@ namespace ObjectInteractionSimulator
             return a * a + b * b;
         }
 
+        private void AddObject(float centerX, float centerY, float angle, float speed, float radius, float mass, int r, int g, int b)
+        {
+            //maybe give method shitty parameter and change it with ref
+            //TODO: check validity of parameters
+            if (radius < 0 || radius > 50)
+            {
+                radius = GetRandValue(5, 50);
+            }
+            if (centerX < radius || centerX > this.ClientSize.Width - radius - menu.Width)
+            {
+                centerX = GetRandValue((int)radius * 2 + 1, (int)(this.ClientSize.Width - radius - menu.Width));
+            }
+            if (centerY < radius || centerY > this.ClientSize.Height - radius)
+            {
+                centerY = GetRandValue((int)radius * 2 + 1, (int)(this.ClientSize.Height - radius));
+            }
+            if (angle < 0 || angle >= 360)
+            {
+                angle = GetRandValue(0, 360);
+            }
+            if (speed < 0 || speed > 20)//Speed maxed at 300; TODO: make global
+            {
+                speed = GetRandValue(0, 20);
+            }
+            if (mass < 0) //no upper bound
+            {
+                //maybe something like 
+                //80% pick something 1-1000; 10% 0-1; 10% 1000-1000000000
+                mass = GetRandValue(0, 10);
+            }
+            if (r < 0 || r > 255)
+            {
+                r = random.Next(0, 255);
+            }
+            if (g < 0 || g > 255)
+            {
+                g = random.Next(0, 255);
+            }
+            if (b < 0 || b > 255)
+            {
+                b = random.Next(0, 255);
+            }
+            //TODO: check x, y against existing objects;
+            while (DoesOverlap(centerX, centerY, radius))
+            {
+                centerX = GetRandValue((int)radius * 2 + 1, (int)(this.ClientSize.Width - radius - menu.Width));
+                centerY = GetRandValue((int)radius * 2 + 1, (int)(this.ClientSize.Height - radius));
+            }
+            PhysicalObject po = new PhysicalObject(centerX: centerX, centerY: centerY, angle: angle, speed: speed, radius: radius, mass: mass, color: Tuple.Create(r, g, b));
+            objects.Add(po);
+            var v = new PaintEventHandler((sender, e) => PaintObject(sender, e, po));
+            this.Paint += v;
+            paintedObjects.Add(v);
+            Invalidate();
+        }
+
+        private float GetRandValue(int min, int max)
+        {
+            return (float)random.NextDouble() * (max-min) + min;
+        }
+
+        private bool DoesOverlap(float x, float y, float r)
+        {
+            for (int i = 0; i < objects.Count; ++i)
+            {
+                if (dist2(objects[i].CenterX - x, objects[i].CenterY - y) < (objects[i].Radius + r) * (objects[i].Radius + r))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void Interval_Label_Click(object sender, EventArgs e)
         {
 
@@ -202,6 +285,226 @@ namespace ObjectInteractionSimulator
                 i = 15;
             timer.Interval = i;
             Interval_Label.Text = i.ToString();
+        }
+
+        private void addObjectButton_Click(object sender, EventArgs e)
+        {
+            if(ToFloat(numberToAdd.Text.ToString()) < 0) { 
+                if (objects.Count <= 200)
+                    AddObject(ToFloat(centerXBox.Text.ToString()), ToFloat(centerYBox.Text.ToString()), ToFloat(angleBox.Text.ToString()), ToFloat(speedBox.Text.ToString()), ToFloat(radiusBox.Text.ToString()), ToFloat(massBox.Text.ToString()), (int)ToFloat(rBox.Text.ToString()), (int)ToFloat(gBox.Text.ToString()), (int)ToFloat(bBox.Text.ToString()));
+            }
+            else { 
+                for (int i = 0; i < (int)ToFloat(numberToAdd.Text.ToString()); ++i)
+                {
+                    if (objects.Count <= 200)
+                        AddObject(ToFloat(centerXBox.Text.ToString()), ToFloat(centerYBox.Text.ToString()), ToFloat(angleBox.Text.ToString()), ToFloat(speedBox.Text.ToString()), ToFloat(radiusBox.Text.ToString()), ToFloat(massBox.Text.ToString()), (int)ToFloat(rBox.Text.ToString()), (int)ToFloat(gBox.Text.ToString()), (int)ToFloat(bBox.Text.ToString()));
+                }
+            }
+
+            numberToAdd.Text = "1";
+        }
+
+        //returns -1 if String is not a number
+        private float ToFloat(String s)
+        {
+            if(float.TryParse(s, out float f))
+            {
+                return f;
+            }
+            return -1;
+        }
+
+        private int FindObjectIndex(String x, String y)
+        {
+            float fx, fy;
+            float.TryParse(x, out fx);
+            float.TryParse(y, out fy);
+            for(int i = 0; i<objects.Count ; ++i)
+            {
+                if (dist2(objects[i].CenterX - fx, objects[i].CenterY - fy) < (objects[i].Radius) * (objects[i].Radius))
+                {
+                    currentObjectIndex = i;
+                    return i;
+                }
+            }
+            currentObjectIndex = -1;
+            return -1;
+        }
+
+        private void ModifyObject()
+        {
+            if(currentObjectIndex >= 0)
+            {
+                float x = ToFloat(centerXMod.Text.ToString());
+                float y = ToFloat(centerYMod.Text.ToString());
+                float a = ToFloat(angleMod.Text.ToString());
+                float s = ToFloat(speedMod.Text.ToString());
+                float r = ToFloat(radiusMod.Text.ToString());
+                float m = ToFloat(massMod.Text.ToString());
+                int red = (int)ToFloat(rBoxMod.Text.ToString());
+                int green = (int)ToFloat(gBoxMod.Text.ToString());
+                int blue = (int)ToFloat(bBoxMod.Text.ToString());
+
+                //check the entered values
+                if (r < 0 || r > 50)
+                {
+                    r = GetRandValue(5, 50);
+                }
+                if (x < r || x > this.ClientSize.Width - r - menu.Width)
+                {
+                    x = GetRandValue((int)r * 2 + 1, (int)(this.ClientSize.Width - r - menu.Width));
+                }
+                if (y < r || y > this.ClientSize.Height - r)
+                {
+                    y = GetRandValue((int)r * 2 + 1, (int)(this.ClientSize.Height - r));
+                }
+                if (a < 0 || a >= 360)
+                {
+                    a = GetRandValue(0, 360);
+                }
+                if (s < 0 || s > 20)//Speed maxed at 300; TODO: make global
+                {
+                    s = GetRandValue(0, 20);
+                }
+                if (m < 0) //no upper bound
+                {
+                    m = GetRandValue(0, 10);
+                }
+                if (red < 0 || red > 255)
+                {
+                    red = random.Next(0, 255);
+                }
+                if (green < 0 || green > 255)
+                {
+                    green = random.Next(0, 255);
+                }
+                if (blue < 0 || blue > 255)
+                {
+                    blue = random.Next(0, 255);
+                }
+
+                //set the new values
+                objects[currentObjectIndex].CenterX = x;
+                objects[currentObjectIndex].CenterY = y;
+                objects[currentObjectIndex].SetAxisSpeeds(a, s);
+                objects[currentObjectIndex].Radius = r;
+                objects[currentObjectIndex].Mass = m;
+                objects[currentObjectIndex].Color = new Tuple<int, int, int>(red, green, blue);
+
+                //display new values in the text boxes
+                centerXMod.Text = objects[currentObjectIndex].CenterX.ToString();
+                centerYMod.Text = objects[currentObjectIndex].CenterY.ToString();
+                angleMod.Text = objects[currentObjectIndex].Angle.ToString();
+                speedMod.Text = objects[currentObjectIndex].Speed.ToString();
+                radiusMod.Text = objects[currentObjectIndex].Radius.ToString();
+                massMod.Text = objects[currentObjectIndex].Mass.ToString();
+                rBoxMod.Text = objects[currentObjectIndex].Color.Item1.ToString();
+                gBoxMod.Text = objects[currentObjectIndex].Color.Item2.ToString();
+                bBoxMod.Text = objects[currentObjectIndex].Color.Item3.ToString();
+
+            }
+            //currentObjectIndex = -1;
+            Invalidate();
+        }
+
+        private void Simulator_Click(object sender, EventArgs e)
+        {
+            Point relativePoint = this.PointToClient(Cursor.Position);
+            int index = FindObjectIndex(relativePoint.X.ToString(), relativePoint.Y.ToString());
+            //Interval_Label.Text = index.ToString();
+            if(index >= 0)
+            {
+                centerXMod.Text = objects[index].CenterX.ToString();
+                centerYMod.Text = objects[index].CenterY.ToString();
+                angleMod.Text = objects[index].Angle.ToString();
+                speedMod.Text = objects[index].Speed.ToString();
+                radiusMod.Text = objects[index].Radius.ToString();
+                massMod.Text = objects[index].Mass.ToString();
+                rBoxMod.Text = objects[index].Color.Item1.ToString();
+                gBoxMod.Text = objects[index].Color.Item2.ToString();
+                bBoxMod.Text = objects[index].Color.Item3.ToString();
+                //populate textboxes
+                //OnButtonClick give it the index and run ModifyObject
+                //hold index in global variable or some lambda shit
+            }
+            else
+            {
+                ClearTextBoxes();
+            }
+
+
+        }
+
+        private void ClearTextBoxes()
+        {
+            centerXMod.Clear();
+            centerYMod.Clear();
+            angleMod.Clear();
+            speedMod.Clear();
+            radiusMod.Clear();
+            massMod.Clear();
+            rBoxMod.Clear();
+            gBoxMod.Clear();
+            bBoxMod.Clear();
+        }
+
+        private void massBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelMass_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void centerXBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelY_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void modifyObjectButton_Click(object sender, EventArgs e)
+        {
+            if(currentObjectIndex >= 0)
+            {
+                ModifyObject();
+            }
+            //currentObjectIndex = -1;
+        }
+
+        private void deleteObjectButton_Click(object sender, EventArgs e)
+        {
+            if(currentObjectIndex >= 0)
+            {
+                this.Paint -= (PaintEventHandler)paintedObjects[currentObjectIndex];
+                objects.RemoveAt(currentObjectIndex);
+                paintedObjects.RemoveAt(currentObjectIndex);
+                Invalidate();
+                centerXMod.Clear();
+                centerYMod.Clear();
+                angleMod.Clear();
+                speedMod.Clear();
+                radiusMod.Clear();
+                massMod.Clear();
+            }
+            currentObjectIndex = -1;
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            for(int i = 0; i < paintedObjects.Count; ++i)
+            {
+                this.Paint -= (PaintEventHandler)paintedObjects[i];
+            }
+            objects.Clear();
+            paintedObjects.Clear();
+            Invalidate();
+            currentObjectIndex = -1;
         }
     }
 }
