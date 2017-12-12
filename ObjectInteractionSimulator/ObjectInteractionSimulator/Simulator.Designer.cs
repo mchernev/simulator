@@ -31,12 +31,19 @@
             this.components = new System.ComponentModel.Container();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.control = new System.Windows.Forms.Button();
-            this.Interval_Label = new System.Windows.Forms.Label();
-            this.Enter_Interval = new System.Windows.Forms.TextBox();
-            this.Set_Interval = new System.Windows.Forms.Button();
             this.menu = new System.Windows.Forms.Panel();
+            this.gravityLabel = new System.Windows.Forms.Label();
+            this.GravityToggle = new System.Windows.Forms.CheckBox();
             this.settings = new System.Windows.Forms.TabControl();
             this.add = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.numberToAdd = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.bBox = new System.Windows.Forms.TextBox();
+            this.gBox = new System.Windows.Forms.TextBox();
+            this.rBox = new System.Windows.Forms.TextBox();
             this.ClearButton = new System.Windows.Forms.Button();
             this.labelMass = new System.Windows.Forms.Label();
             this.labelRadius = new System.Windows.Forms.Label();
@@ -52,6 +59,12 @@
             this.centerXBox = new System.Windows.Forms.TextBox();
             this.massBox = new System.Windows.Forms.TextBox();
             this.modify = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.bBoxMod = new System.Windows.Forms.TextBox();
+            this.gBoxMod = new System.Windows.Forms.TextBox();
+            this.rBoxMod = new System.Windows.Forms.TextBox();
             this.deleteObjectButton = new System.Windows.Forms.Button();
             this.modifyObjectButton = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
@@ -66,20 +79,10 @@
             this.angleMod = new System.Windows.Forms.TextBox();
             this.centerYMod = new System.Windows.Forms.TextBox();
             this.centerXMod = new System.Windows.Forms.TextBox();
-            this.rBox = new System.Windows.Forms.TextBox();
-            this.gBox = new System.Windows.Forms.TextBox();
-            this.bBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.rBoxMod = new System.Windows.Forms.TextBox();
-            this.gBoxMod = new System.Windows.Forms.TextBox();
-            this.bBoxMod = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.numberToAdd = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
+            this.constBox = new System.Windows.Forms.TextBox();
+            this.setConst = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.deafultConst = new System.Windows.Forms.Button();
             this.menu.SuspendLayout();
             this.settings.SuspendLayout();
             this.add.SuspendLayout();
@@ -100,37 +103,9 @@
             this.control.Name = "control";
             this.control.Size = new System.Drawing.Size(247, 69);
             this.control.TabIndex = 0;
-            this.control.Text = "Start/Stop";
+            this.control.Text = "Start";
             this.control.UseVisualStyleBackColor = false;
             this.control.Click += new System.EventHandler(this.control_Click);
-            // 
-            // Interval_Label
-            // 
-            this.Interval_Label.AutoSize = true;
-            this.Interval_Label.Location = new System.Drawing.Point(113, 90);
-            this.Interval_Label.Name = "Interval_Label";
-            this.Interval_Label.Size = new System.Drawing.Size(42, 13);
-            this.Interval_Label.TabIndex = 1;
-            this.Interval_Label.Text = "Interval";
-            this.Interval_Label.Click += new System.EventHandler(this.Interval_Label_Click);
-            // 
-            // Enter_Interval
-            // 
-            this.Enter_Interval.Location = new System.Drawing.Point(161, 87);
-            this.Enter_Interval.Name = "Enter_Interval";
-            this.Enter_Interval.Size = new System.Drawing.Size(59, 20);
-            this.Enter_Interval.TabIndex = 2;
-            this.Enter_Interval.TextChanged += new System.EventHandler(this.Enter_Interval_TextChanged);
-            // 
-            // Set_Interval
-            // 
-            this.Set_Interval.Location = new System.Drawing.Point(246, 85);
-            this.Set_Interval.Name = "Set_Interval";
-            this.Set_Interval.Size = new System.Drawing.Size(75, 23);
-            this.Set_Interval.TabIndex = 3;
-            this.Set_Interval.Text = "Set Interval";
-            this.Set_Interval.UseVisualStyleBackColor = true;
-            this.Set_Interval.Click += new System.EventHandler(this.Set_Interval_Click);
             // 
             // menu
             // 
@@ -138,16 +113,43 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.menu.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.menu.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.menu.Controls.Add(this.deafultConst);
+            this.menu.Controls.Add(this.label14);
+            this.menu.Controls.Add(this.setConst);
+            this.menu.Controls.Add(this.constBox);
+            this.menu.Controls.Add(this.gravityLabel);
+            this.menu.Controls.Add(this.GravityToggle);
             this.menu.Controls.Add(this.settings);
             this.menu.Controls.Add(this.control);
-            this.menu.Controls.Add(this.Interval_Label);
-            this.menu.Controls.Add(this.Enter_Interval);
-            this.menu.Controls.Add(this.Set_Interval);
             this.menu.Location = new System.Drawing.Point(737, 0);
             this.menu.Margin = new System.Windows.Forms.Padding(0);
             this.menu.Name = "menu";
             this.menu.Size = new System.Drawing.Size(390, 805);
             this.menu.TabIndex = 4;
+            // 
+            // gravityLabel
+            // 
+            this.gravityLabel.AutoSize = true;
+            this.gravityLabel.Location = new System.Drawing.Point(144, 91);
+            this.gravityLabel.Name = "gravityLabel";
+            this.gravityLabel.Size = new System.Drawing.Size(40, 13);
+            this.gravityLabel.TabIndex = 6;
+            this.gravityLabel.Text = "Gravity";
+            // 
+            // GravityToggle
+            // 
+            this.GravityToggle.Appearance = System.Windows.Forms.Appearance.Button;
+            this.GravityToggle.BackColor = System.Drawing.Color.Aqua;
+            this.GravityToggle.Checked = true;
+            this.GravityToggle.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.GravityToggle.Location = new System.Drawing.Point(190, 85);
+            this.GravityToggle.Name = "GravityToggle";
+            this.GravityToggle.Size = new System.Drawing.Size(50, 25);
+            this.GravityToggle.TabIndex = 5;
+            this.GravityToggle.Text = "On";
+            this.GravityToggle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.GravityToggle.UseVisualStyleBackColor = false;
+            this.GravityToggle.CheckedChanged += new System.EventHandler(this.GravityToggle_CheckedChanged);
             // 
             // settings
             // 
@@ -159,10 +161,10 @@
             this.settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settings.HotTrack = true;
             this.settings.ItemSize = new System.Drawing.Size(190, 50);
-            this.settings.Location = new System.Drawing.Point(0, 126);
+            this.settings.Location = new System.Drawing.Point(0, 160);
             this.settings.Name = "settings";
             this.settings.SelectedIndex = 0;
-            this.settings.Size = new System.Drawing.Size(385, 672);
+            this.settings.Size = new System.Drawing.Size(385, 638);
             this.settings.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.settings.TabIndex = 4;
             // 
@@ -193,10 +195,77 @@
             this.add.Location = new System.Drawing.Point(4, 54);
             this.add.Name = "add";
             this.add.Padding = new System.Windows.Forms.Padding(3);
-            this.add.Size = new System.Drawing.Size(377, 614);
+            this.add.Size = new System.Drawing.Size(377, 580);
             this.add.TabIndex = 0;
             this.add.Text = "Add Object";
             this.add.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(105, 383);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(129, 13);
+            this.label13.TabIndex = 22;
+            this.label13.Text = "Number of objects to add:";
+            // 
+            // numberToAdd
+            // 
+            this.numberToAdd.Location = new System.Drawing.Point(240, 380);
+            this.numberToAdd.MaxLength = 3;
+            this.numberToAdd.Name = "numberToAdd";
+            this.numberToAdd.Size = new System.Drawing.Size(32, 20);
+            this.numberToAdd.TabIndex = 21;
+            this.numberToAdd.Text = "1";
+            this.numberToAdd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(246, 302);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(14, 13);
+            this.label9.TabIndex = 20;
+            this.label9.Text = "B";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(194, 302);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(15, 13);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "G";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(140, 302);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(15, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "R";
+            // 
+            // bBox
+            // 
+            this.bBox.Location = new System.Drawing.Point(229, 318);
+            this.bBox.Name = "bBox";
+            this.bBox.Size = new System.Drawing.Size(46, 20);
+            this.bBox.TabIndex = 17;
+            // 
+            // gBox
+            // 
+            this.gBox.Location = new System.Drawing.Point(177, 318);
+            this.gBox.Name = "gBox";
+            this.gBox.Size = new System.Drawing.Size(46, 20);
+            this.gBox.TabIndex = 16;
+            // 
+            // rBox
+            // 
+            this.rBox.Location = new System.Drawing.Point(125, 318);
+            this.rBox.Name = "rBox";
+            this.rBox.Size = new System.Drawing.Size(46, 20);
+            this.rBox.TabIndex = 15;
             // 
             // ClearButton
             // 
@@ -354,6 +423,54 @@
             this.modify.Text = "Modify Object";
             this.modify.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(246, 302);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(14, 13);
+            this.label12.TabIndex = 21;
+            this.label12.Text = "B";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(194, 302);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(15, 13);
+            this.label11.TabIndex = 20;
+            this.label11.Text = "G";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(140, 302);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(15, 13);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "R";
+            // 
+            // bBoxMod
+            // 
+            this.bBoxMod.Location = new System.Drawing.Point(229, 318);
+            this.bBoxMod.Name = "bBoxMod";
+            this.bBoxMod.Size = new System.Drawing.Size(46, 20);
+            this.bBoxMod.TabIndex = 18;
+            // 
+            // gBoxMod
+            // 
+            this.gBoxMod.Location = new System.Drawing.Point(177, 318);
+            this.gBoxMod.Name = "gBoxMod";
+            this.gBoxMod.Size = new System.Drawing.Size(46, 20);
+            this.gBoxMod.TabIndex = 17;
+            // 
+            // rBoxMod
+            // 
+            this.rBoxMod.Location = new System.Drawing.Point(125, 318);
+            this.rBoxMod.Name = "rBoxMod";
+            this.rBoxMod.Size = new System.Drawing.Size(46, 20);
+            this.rBoxMod.TabIndex = 16;
+            // 
             // deleteObjectButton
             // 
             this.deleteObjectButton.BackColor = System.Drawing.Color.OrangeRed;
@@ -476,120 +593,41 @@
             this.centerXMod.Size = new System.Drawing.Size(100, 20);
             this.centerXMod.TabIndex = 1;
             // 
-            // rBox
+            // constBox
             // 
-            this.rBox.Location = new System.Drawing.Point(125, 318);
-            this.rBox.Name = "rBox";
-            this.rBox.Size = new System.Drawing.Size(46, 20);
-            this.rBox.TabIndex = 15;
+            this.constBox.Location = new System.Drawing.Point(147, 127);
+            this.constBox.Name = "constBox";
+            this.constBox.Size = new System.Drawing.Size(93, 20);
+            this.constBox.TabIndex = 7;
             // 
-            // gBox
+            // setConst
             // 
-            this.gBox.Location = new System.Drawing.Point(177, 318);
-            this.gBox.Name = "gBox";
-            this.gBox.Size = new System.Drawing.Size(46, 20);
-            this.gBox.TabIndex = 16;
+            this.setConst.Location = new System.Drawing.Point(246, 125);
+            this.setConst.Name = "setConst";
+            this.setConst.Size = new System.Drawing.Size(40, 23);
+            this.setConst.TabIndex = 8;
+            this.setConst.Text = "Set";
+            this.setConst.UseVisualStyleBackColor = true;
+            this.setConst.Click += new System.EventHandler(this.setConst_Click);
             // 
-            // bBox
+            // label14
             // 
-            this.bBox.Location = new System.Drawing.Point(229, 318);
-            this.bBox.Name = "bBox";
-            this.bBox.Size = new System.Drawing.Size(46, 20);
-            this.bBox.TabIndex = 17;
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(29, 130);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(110, 13);
+            this.label14.TabIndex = 9;
+            this.label14.Text = "Gravitational constant";
             // 
-            // label7
+            // deafultConst
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(140, 302);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(15, 13);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "R";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(194, 302);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(15, 13);
-            this.label8.TabIndex = 19;
-            this.label8.Text = "G";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(246, 302);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(14, 13);
-            this.label9.TabIndex = 20;
-            this.label9.Text = "B";
-            // 
-            // rBoxMod
-            // 
-            this.rBoxMod.Location = new System.Drawing.Point(125, 318);
-            this.rBoxMod.Name = "rBoxMod";
-            this.rBoxMod.Size = new System.Drawing.Size(46, 20);
-            this.rBoxMod.TabIndex = 16;
-            // 
-            // gBoxMod
-            // 
-            this.gBoxMod.Location = new System.Drawing.Point(177, 318);
-            this.gBoxMod.Name = "gBoxMod";
-            this.gBoxMod.Size = new System.Drawing.Size(46, 20);
-            this.gBoxMod.TabIndex = 17;
-            // 
-            // bBoxMod
-            // 
-            this.bBoxMod.Location = new System.Drawing.Point(229, 318);
-            this.bBoxMod.Name = "bBoxMod";
-            this.bBoxMod.Size = new System.Drawing.Size(46, 20);
-            this.bBoxMod.TabIndex = 18;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(140, 302);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(15, 13);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "R";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(194, 302);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(15, 13);
-            this.label11.TabIndex = 20;
-            this.label11.Text = "G";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(246, 302);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(14, 13);
-            this.label12.TabIndex = 21;
-            this.label12.Text = "B";
-            // 
-            // numberToAdd
-            // 
-            this.numberToAdd.Location = new System.Drawing.Point(240, 380);
-            this.numberToAdd.MaxLength = 3;
-            this.numberToAdd.Name = "numberToAdd";
-            this.numberToAdd.Size = new System.Drawing.Size(32, 20);
-            this.numberToAdd.TabIndex = 21;
-            this.numberToAdd.Text = "1";
-            this.numberToAdd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(105, 383);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(129, 13);
-            this.label13.TabIndex = 22;
-            this.label13.Text = "Number of objects to add:";
+            this.deafultConst.Location = new System.Drawing.Point(292, 125);
+            this.deafultConst.Name = "deafultConst";
+            this.deafultConst.Size = new System.Drawing.Size(75, 23);
+            this.deafultConst.TabIndex = 10;
+            this.deafultConst.Text = "Deafault";
+            this.deafultConst.UseVisualStyleBackColor = true;
+            this.deafultConst.Click += new System.EventHandler(this.deafultConst_Click);
             // 
             // Simulator
             // 
@@ -616,9 +654,6 @@
 
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Button control;
-        private System.Windows.Forms.Label Interval_Label;
-        private System.Windows.Forms.TextBox Enter_Interval;
-        private System.Windows.Forms.Button Set_Interval;
         private System.Windows.Forms.Panel menu;
         private System.Windows.Forms.TabControl settings;
         private System.Windows.Forms.TabPage add;
@@ -665,6 +700,12 @@
         private System.Windows.Forms.TextBox rBoxMod;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox numberToAdd;
+        private System.Windows.Forms.CheckBox GravityToggle;
+        private System.Windows.Forms.Label gravityLabel;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button setConst;
+        private System.Windows.Forms.TextBox constBox;
+        private System.Windows.Forms.Button deafultConst;
     }
 }
 

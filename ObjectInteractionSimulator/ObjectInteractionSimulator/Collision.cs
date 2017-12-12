@@ -133,21 +133,23 @@ namespace ObjectInteractionSimulator
         {
             //solve: (m2m2 + m1m2)u2u2 - (2 p m2)u2 + pp + m1m1 sin2a v1v1 + m1m2 sin2b v2v2 - em1 = 0
 
-            float D = SquareF(2 * momentum * m2) - 4 * (SquareF(m2) + m1 * m2) * (SquareF(momentum) + SquareF(m1) * SquareF((float)Math.Sin(Angle(alpha))) * SquareF(v1) + (m1 * m2 * SquareF((float)Math.Sin(Angle(beta))) * SquareF(v2) - energy * m1));
+            //making Discrimant double may fix problems
+            double D = SquareD(2 * momentum * m2) - 4 * (SquareD(m2) + m1 * m2) * (SquareD(momentum) + SquareD(m1) * SquareD(Math.Sin(Angle(alpha))) * SquareD(v1) + (m1 * m2 * SquareD(Math.Sin(Angle(beta))) * SquareD(v2) - energy * m1));
             Console.WriteLine("D: " + D);
-            if(D < 0)
+            if (D < 0)
             {
                 D = 0;
                 Console.WriteLine("ERROR: D is negative");
             }
-            float x1, x2;
-            x1 = ((2 * momentum * m2) + (float)Math.Sqrt(D)) / (2 * (SquareF(m2) + m1 * m2));
-            x2 = ((2 * momentum * m2) - (float)Math.Sqrt(D)) / (2 * (SquareF(m2) + m1 * m2));
+            D = Math.Sqrt(D);
+            double x1, x2;
+            x1 = ((2 * momentum * m2) + D) / (2 * (SquareF(m2) + m1 * m2));
+            x2 = ((2 * momentum * m2) - D) / (2 * (SquareF(m2) + m1 * m2));
 
             if (Math.Abs(x1 - Math.Cos(Angle(beta)) * v2) > Math.Abs(x2 - Math.Cos(Angle(beta)) * v2))
-                u2 = x1;
+                u2 = (float)x1;
             else
-                u2 = x2;
+                u2 = (float)x2;
         }
 
         private void FindU1()
@@ -175,12 +177,12 @@ namespace ObjectInteractionSimulator
                     u = speed;
                     //Console.WriteLine("    ERROR: LOOK AT CALCULATE_NEW_ANGLE; Speeds are wrongly calculated    ");
                 }
-                if(Math.Abs(u) / Math.Abs(speed) > 1)
+                if (Math.Abs(u) / Math.Abs(speed) > 1)
                 {
                     u = -speed;
                 }
                 angle = (float)Math.Acos(u / speed);//angle is in rad
-                
+
                 if (speedY > 0)
                 {
                     angle = 2 * (float)Math.PI - angle;
@@ -199,6 +201,11 @@ namespace ObjectInteractionSimulator
         private float SquareF(float f)
         {
             return f * f;
+        }
+
+        private double SquareD(double d)
+        {
+            return d * d;
         }
     }
 }

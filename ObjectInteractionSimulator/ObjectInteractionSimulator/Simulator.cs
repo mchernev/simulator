@@ -13,15 +13,16 @@ namespace ObjectInteractionSimulator
 {
     public partial class Simulator : Form
     {
-
         Graphics graphics;
 
         List<PhysicalObject> objects = new List<PhysicalObject>();
         List<Delegate> paintedObjects = new List<Delegate>();
 
         Gravity gravity;
+        private float gravity_const = 0.0000000000667f;
 
         int currentObjectIndex = -1;
+        const int MAX_OBJECTS = 100;
 
         Random random = new Random();
 
@@ -54,6 +55,11 @@ namespace ObjectInteractionSimulator
             //objects.Add(new PhysicalObject(centerX: 400, centerY: 400, angle: 0, speed: 0, radius: 30, mass: 1000000000000, color: Tuple.Create(255, 255, 0)));
 
 
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 100, angle: 0, speed: 0.345f, radius: 5, mass: 1000000000, color: Tuple.Create(25, 255, 25)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 90, angle: 0, speed: 0.404f, radius: 2, mass: 100000000, color: Tuple.Create(125, 125, 125)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 330, angle: 0, speed: 0.65f, radius: 4, mass: 1000000000, color: Tuple.Create(255, 25, 25)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 260, angle: 0, speed: 0.5f, radius: 4, mass: 1000000000, color: Tuple.Create(255, 25, 255)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 400, angle: 0, speed: 0, radius: 30, mass: 1000000000000, color: Tuple.Create(255, 255, 0)));
 
             //AddObject(centerX: 100, centerY: 100, angle: 0, speed: 0, radius: 30, mass: 10000);
             //TODO: Something is wrong with the mass; very light objects not acting properly around cery heavy objects
@@ -92,8 +98,9 @@ namespace ObjectInteractionSimulator
             this.DoubleBuffered = true;
 
             gravity = new Gravity(objects);
+            constBox.Text = gravity_const.ToString();
 
-            Interval_Label.Text = timer.Interval.ToString();
+            //Interval_Label.Text = timer.Interval.ToString();
         }
 
         private void PaintObject(object sender, PaintEventArgs e, PhysicalObject po)
@@ -108,7 +115,7 @@ namespace ObjectInteractionSimulator
 
             //center color should be brghter; to make darker - lower values proportionally
             pthGrBrush.CenterColor = Color.FromArgb(255, po.Color.Item1, po.Color.Item2, po.Color.Item3);
-            Color[] colors = { Color.FromArgb(255, po.Color.Item1 / 5 * 4, po.Color.Item2 / 5 * 4, po.Color.Item3 / 5 * 4) };
+            Color[] colors = { Color.FromArgb(255, po.Color.Item1 / 5 * 3, po.Color.Item2 / 5 * 3, po.Color.Item3 / 5 * 3) };
             pthGrBrush.SurroundColors = colors;
 
             //SolidBrush brush = new SolidBrush(ColorTranslator.FromHtml("#ff00ff"));
@@ -128,9 +135,6 @@ namespace ObjectInteractionSimulator
             {
                 BounceOffHorizontalWall(po);
             }
-
-            //Try detecting collision here
-            //DetectCollisions();
 
             po.CenterX += po.SpeedX;
             po.CenterY += po.SpeedY;
@@ -157,17 +161,28 @@ namespace ObjectInteractionSimulator
         private void control_Click(object sender, EventArgs e)
         {
             timer.Enabled = !timer.Enabled;
-            if(timer.Enabled)
+            if (timer.Enabled)
+            {
                 control.BackColor = Color.Red;
+                control.Text = "Stop";
+            }
             else
+            {
                 control.BackColor = Color.Lime;
+                control.Text = "Start";
+            }
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            objects.ForEach((item) => MoveObject(item));
-            objects.ForEach((item) => gravity.ApplyGravityOn(item));
+            //objects.ForEach((item) => MoveObject(item));
+            if(GravityToggle.Checked)
+                objects.ForEach((item) => gravity.ApplyGravityOn(item));
+
             DetectCollisions();
+
+            objects.ForEach((item) => MoveObject(item));
+
             //tick every 15 ms; acc = how much speed is gained in 15 ms;
             //y = 6.67 * 10^(-11)N.m^2/kg^2
             //F = y * (m1 * m2) / r^2
@@ -196,8 +211,7 @@ namespace ObjectInteractionSimulator
 
         private void AddObject(float centerX, float centerY, float angle, float speed, float radius, float mass, int r, int g, int b)
         {
-            //maybe give method shitty parameter and change it with ref
-            //TODO: check validity of parameters
+            //check validity of parameters
             if (radius < 0 || radius > 50)
             {
                 radius = GetRandValue(5, 50);
@@ -220,8 +234,6 @@ namespace ObjectInteractionSimulator
             }
             if (mass < 0) //no upper bound
             {
-                //maybe something like 
-                //80% pick something 1-1000; 10% 0-1; 10% 1000-1000000000
                 mass = GetRandValue(0, 10);
             }
             if (r < 0 || r > 255)
@@ -236,17 +248,21 @@ namespace ObjectInteractionSimulator
             {
                 b = random.Next(0, 255);
             }
-            //TODO: check x, y against existing objects;
-            while (DoesOverlap(centerX, centerY, radius))
+
+            //if the new object intersects an existing object, find it new coordinates 
+            for (int i = 0;  DoesOverlap(centerX, centerY, radius); ++i)
             {
                 centerX = GetRandValue((int)radius * 2 + 1, (int)(this.ClientSize.Width - radius - menu.Width));
                 centerY = GetRandValue((int)radius * 2 + 1, (int)(this.ClientSize.Height - radius));
+                if(i > 10)
+                    radius = ReduceRadius(radius);
             }
+
             PhysicalObject po = new PhysicalObject(centerX: centerX, centerY: centerY, angle: angle, speed: speed, radius: radius, mass: mass, color: Tuple.Create(r, g, b));
             objects.Add(po);
-            var v = new PaintEventHandler((sender, e) => PaintObject(sender, e, po));
-            this.Paint += v;
-            paintedObjects.Add(v);
+            var peh = new PaintEventHandler((sender, e) => PaintObject(sender, e, po));
+            this.Paint += peh;
+            paintedObjects.Add(peh);
             Invalidate();
         }
 
@@ -254,17 +270,29 @@ namespace ObjectInteractionSimulator
         {
             return (float)random.NextDouble() * (max-min) + min;
         }
-
+        
+        //checks if new object overlaps existing object
         private bool DoesOverlap(float x, float y, float r)
         {
             for (int i = 0; i < objects.Count; ++i)
             {
+                if (i == currentObjectIndex)//objects overlap themselves
+                    continue;
                 if (dist2(objects[i].CenterX - x, objects[i].CenterY - y) < (objects[i].Radius + r) * (objects[i].Radius + r))
                 {
                     return true;
                 }
             }
             return false;
+        }
+
+        private float ReduceRadius(float r)
+        {
+            if (!(r <= 1))
+            {
+                return --r;
+            }
+            return r;
         }
 
         private void Interval_Label_Click(object sender, EventArgs e)
@@ -277,26 +305,26 @@ namespace ObjectInteractionSimulator
 
         }
 
-        private void Set_Interval_Click(object sender, EventArgs e)
-        {
-            int i;
-            int.TryParse(Enter_Interval.Text, out i);
-            if (i == 0)
-                i = 15;
-            timer.Interval = i;
-            Interval_Label.Text = i.ToString();
-        }
+        //private void Set_Interval_Click(object sender, EventArgs e)
+        //{
+        //    int i;
+        //    int.TryParse(Enter_Interval.Text, out i);
+        //    if (i == 0)
+        //        i = 15;
+        //    timer.Interval = i;
+        //    Interval_Label.Text = i.ToString();
+        //}
 
         private void addObjectButton_Click(object sender, EventArgs e)
         {
             if(ToFloat(numberToAdd.Text.ToString()) < 0) { 
-                if (objects.Count <= 200)
+                if (objects.Count <= MAX_OBJECTS)
                     AddObject(ToFloat(centerXBox.Text.ToString()), ToFloat(centerYBox.Text.ToString()), ToFloat(angleBox.Text.ToString()), ToFloat(speedBox.Text.ToString()), ToFloat(radiusBox.Text.ToString()), ToFloat(massBox.Text.ToString()), (int)ToFloat(rBox.Text.ToString()), (int)ToFloat(gBox.Text.ToString()), (int)ToFloat(bBox.Text.ToString()));
             }
             else { 
                 for (int i = 0; i < (int)ToFloat(numberToAdd.Text.ToString()); ++i)
                 {
-                    if (objects.Count <= 200)
+                    if (objects.Count <= MAX_OBJECTS)
                         AddObject(ToFloat(centerXBox.Text.ToString()), ToFloat(centerYBox.Text.ToString()), ToFloat(angleBox.Text.ToString()), ToFloat(speedBox.Text.ToString()), ToFloat(radiusBox.Text.ToString()), ToFloat(massBox.Text.ToString()), (int)ToFloat(rBox.Text.ToString()), (int)ToFloat(gBox.Text.ToString()), (int)ToFloat(bBox.Text.ToString()));
                 }
             }
@@ -381,6 +409,14 @@ namespace ObjectInteractionSimulator
                 if (blue < 0 || blue > 255)
                 {
                     blue = random.Next(0, 255);
+                }
+
+                for (int i = 0;  DoesOverlap(x, y, r); ++i)
+                {
+                    x = GetRandValue((int)r * 2 + 1, (int)(this.ClientSize.Width - r - menu.Width));
+                    y = GetRandValue((int)r * 2 + 1, (int)(this.ClientSize.Height - r));
+                    if (i > 10)//if the app cannot find place for the object quickly it reduces its size
+                        r = ReduceRadius(r);
                 }
 
                 //set the new values
@@ -506,5 +542,42 @@ namespace ObjectInteractionSimulator
             Invalidate();
             currentObjectIndex = -1;
         }
+
+        private void GravityToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GravityToggle.Checked)
+            {
+                GravityToggle.Text = "On";
+                GravityToggle.BackColor = Color.Aqua;
+            }
+            else
+            {
+                GravityToggle.Text = "Off";
+                GravityToggle.BackColor = Color.Silver;
+            }
+        }
+
+        private void setConst_Click(object sender, EventArgs e)
+        {
+            float c;
+            if (float.TryParse(constBox.Text.ToString(), out c))
+            {
+                gravity_const = c;
+            }
+            else
+            {
+                //set default
+                gravity_const = 0.0000000000667f;
+            }
+            constBox.Text = gravity_const.ToString();
+        }
+
+        private void deafultConst_Click(object sender, EventArgs e)
+        {
+            gravity_const = 0.0000000000667f;
+            constBox.Text = gravity_const.ToString();
+        }
+        //TODO: use grav_const in Gravity class
+        //TODO: if grav_const is negative +180deg the force angle in the Gravity class
     }
 }
