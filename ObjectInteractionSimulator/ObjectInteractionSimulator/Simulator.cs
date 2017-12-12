@@ -97,7 +97,7 @@ namespace ObjectInteractionSimulator
             this.Size = new Size(1216, 839);
             this.DoubleBuffered = true;
 
-            gravity = new Gravity(objects);
+            gravity = new Gravity(objects, gravity_const);
             constBox.Text = gravity_const.ToString();
 
             //Interval_Label.Text = timer.Interval.ToString();
@@ -570,12 +570,14 @@ namespace ObjectInteractionSimulator
                 gravity_const = 0.0000000000667f;
             }
             constBox.Text = gravity_const.ToString();
+            gravity.Gravity_Const = gravity_const;
         }
 
         private void deafultConst_Click(object sender, EventArgs e)
         {
             gravity_const = 0.0000000000667f;
             constBox.Text = gravity_const.ToString();
+            gravity.Gravity_Const = gravity_const;
         }
         //TODO: use grav_const in Gravity class
         //TODO: if grav_const is negative +180deg the force angle in the Gravity class

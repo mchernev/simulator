@@ -10,17 +10,18 @@ namespace ObjectInteractionSimulator
     {
         private List<PhysicalObject> list;
         private Tuple<float, float> vector;//(size, angle)
-        private const float GRAVITY_CONST = 0.0000000000667f;//6.67 * 10^(-11)N.m^2/kg^2
+        private float gravity_const = 0.0000000000667f;//6.67 * 10^(-11)N.m^2/kg^2
 
         public Gravity()
         {
             vector = new Tuple<float, float>(0, 0);
         }
 
-        public Gravity (List<PhysicalObject> objects)
+        public Gravity (List<PhysicalObject> objects, float gravity)
         {
             list = objects;
             vector = new Tuple<float, float>(0, 0);
+            gravity_const = gravity;
         }
 
         public List<PhysicalObject> List
@@ -59,7 +60,7 @@ namespace ObjectInteractionSimulator
             if (DistanceSq(po1.CenterX, po1.CenterY, po2.CenterX, po2.CenterY) == 0)
                 return 0;
             else
-                return GRAVITY_CONST * (po1.Mass * po2.Mass) / DistanceSq(po1.CenterX, po1.CenterY, po2.CenterX, po2.CenterY);
+                return Math.Abs(gravity_const) * (po1.Mass * po2.Mass) / DistanceSq(po1.CenterX, po1.CenterY, po2.CenterX, po2.CenterY);
         }
 
         //calculates the force vector's angle
@@ -85,6 +86,12 @@ namespace ObjectInteractionSimulator
             if (dy == 0 && dx > 0)
             {
                 angle += 180;
+            }
+
+            if(gravity_const < 0)
+            {
+                angle += 180;
+                angle %= 360;
             }
 
             return angle;
@@ -152,6 +159,18 @@ namespace ObjectInteractionSimulator
         private float Angle(float angle)//returns angle in rad
         {
             return angle * ((float)Math.PI / 180);
+        }
+
+        public float Gravity_Const
+        {
+            get
+            {
+                return gravity_const;
+            }
+            set
+            {
+                gravity_const = value;
+            }
         }
     }
 }
