@@ -30,51 +30,51 @@ namespace ObjectInteractionSimulator
             alpha = po1.Angle; //in deg
             beta = po2.Angle; //in deg
 
-            Console.WriteLine("\nAlpha: " + alpha);
-            Console.WriteLine("Beta: " + beta);
+            //Console.WriteLine("\nAlpha: " + alpha);
+            //Console.WriteLine("Beta: " + beta);
 
             inclineAngle = GetInclineAngle(po1.CenterX, po2.CenterX, po1.CenterY, po2.CenterY);
-            Console.WriteLine("Incline: " + inclineAngle);
+            //Console.WriteLine("Incline: " + inclineAngle);
 
             ShiftAngles();
-            Console.WriteLine("Alpha after shift: " + alpha);
-            Console.WriteLine("Beta after shift: " + beta);
+            //Console.WriteLine("Alpha after shift: " + alpha);
+            //Console.WriteLine("Beta after shift: " + beta);
 
             po1.SetAxisSpeeds(alpha, v1);
             po2.SetAxisSpeeds(beta, v2);
 
-            Console.WriteLine("InitSpeed1: " + v1);
-            Console.WriteLine("InitSpeed2: " + v2);
+            //Console.WriteLine("InitSpeed1: " + v1);
+            //Console.WriteLine("InitSpeed2: " + v2);
 
             //Momentum must be calculated after angle shift
             CalculateMomentum();
-            Console.WriteLine("Momentum: " + momentum);
+            //Console.WriteLine("Momentum: " + momentum);
 
             CalculateEnergy();
-            Console.WriteLine("Energy: " + energy);
+            //Console.WriteLine("Energy: " + energy);
 
             CalculateU2();
-            Console.WriteLine("u2: " + u2);
+            //Console.WriteLine("u2: " + u2);
 
             FindU1();
-            Console.WriteLine("u1: " + u1);
+            //Console.WriteLine("u1: " + u1);
 
             //find new speeds and calculate new angles
             newSpeed1 = CalculateNewSpeed(u1, alpha, v1);
-            Console.WriteLine("New Speed 1: " + newSpeed1);
+            //Console.WriteLine("New Speed 1: " + newSpeed1);
 
             newSpeed2 = CalculateNewSpeed(u2, beta, v2);
-            Console.WriteLine("New Speed 2: " + newSpeed2);
+            //Console.WriteLine("New Speed 2: " + newSpeed2);
 
             newAlpha = CalculateNewAngle(newSpeed1, u1, po1.SpeedY);
-            Console.WriteLine("New Alpha: " + newAlpha);
+            //Console.WriteLine("New Alpha: " + newAlpha);
 
             newBeta = CalculateNewAngle(newSpeed2, u2, po2.SpeedY);
-            Console.WriteLine("New Beta: " + newBeta);
+            //Console.WriteLine("New Beta: " + newBeta);
 
             RestoreAngles();
-            Console.WriteLine("New Alpha after restore: " + newAlpha);
-            Console.WriteLine("New Beta after restore: " + newBeta);
+            //Console.WriteLine("New Alpha after restore: " + newAlpha);
+            //Console.WriteLine("New Beta after restore: " + newBeta);
 
             po1.SetAxisSpeeds(newAlpha, Math.Abs(newSpeed1));//spped should be positive
             po2.SetAxisSpeeds(newBeta, Math.Abs(newSpeed2));//speed should be positive
@@ -133,13 +133,12 @@ namespace ObjectInteractionSimulator
         {
             //solve: (m2m2 + m1m2)u2u2 - (2 p m2)u2 + pp + m1m1 sin2a v1v1 + m1m2 sin2b v2v2 - em1 = 0
 
-            //making Discrimant double may fix problems
             double D = SquareD(2 * momentum * m2) - 4 * (SquareD(m2) + m1 * m2) * (SquareD(momentum) + SquareD(m1) * SquareD(Math.Sin(Angle(alpha))) * SquareD(v1) + (m1 * m2 * SquareD(Math.Sin(Angle(beta))) * SquareD(v2) - energy * m1));
-            Console.WriteLine("D: " + D);
+            //Console.WriteLine("D: " + D);
             if (D < 0)
             {
                 D = 0;
-                Console.WriteLine("ERROR: D is negative");
+                //Console.WriteLine("ERROR: D is negative");
             }
             D = Math.Sqrt(D);
             double x1, x2;
@@ -175,7 +174,6 @@ namespace ObjectInteractionSimulator
                 if (u > speed)//crashes if u > NewSpeed
                 {
                     u = speed;
-                    //Console.WriteLine("    ERROR: LOOK AT CALCULATE_NEW_ANGLE; Speeds are wrongly calculated    ");
                 }
                 if (Math.Abs(u) / Math.Abs(speed) > 1)
                 {

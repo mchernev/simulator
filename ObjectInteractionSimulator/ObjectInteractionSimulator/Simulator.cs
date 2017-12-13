@@ -23,7 +23,8 @@ namespace ObjectInteractionSimulator
 
         int currentObjectIndex = -1;
         const int MAX_OBJECTS = 100;
-
+        const int MAX_SPEED = 20;
+        const int MAX_RADIUS = 50;
         Random random = new Random();
 
         public Simulator()
@@ -58,7 +59,7 @@ namespace ObjectInteractionSimulator
             //objects.Add(new PhysicalObject(centerX: 400, centerY: 100, angle: 0, speed: 0.345f, radius: 5, mass: 1000000000, color: Tuple.Create(25, 255, 25)));
             //objects.Add(new PhysicalObject(centerX: 400, centerY: 90, angle: 0, speed: 0.404f, radius: 2, mass: 100000000, color: Tuple.Create(125, 125, 125)));
             //objects.Add(new PhysicalObject(centerX: 400, centerY: 330, angle: 0, speed: 0.65f, radius: 4, mass: 1000000000, color: Tuple.Create(255, 25, 25)));
-            //objects.Add(new PhysicalObject(centerX: 400, centerY: 260, angle: 0, speed: 0.5f, radius: 4, mass: 1000000000, color: Tuple.Create(255, 25, 255)));
+            //objects.Add(new PhysicalObject(centerX: 400, centerY: 260, angle: 0, speed: 0.5f, radius: 4, mass: 1000000000, color: Tuple.Create(100, 100, 255)));
             //objects.Add(new PhysicalObject(centerX: 400, centerY: 400, angle: 0, speed: 0, radius: 30, mass: 1000000000000, color: Tuple.Create(255, 255, 0)));
 
             //AddObject(centerX: 100, centerY: 100, angle: 0, speed: 0, radius: 30, mass: 10000);
@@ -100,7 +101,6 @@ namespace ObjectInteractionSimulator
             gravity = new Gravity(objects, gravity_const);
             constBox.Text = gravity_const.ToString();
 
-            //Interval_Label.Text = timer.Interval.ToString();
         }
 
         private void PaintObject(object sender, PaintEventArgs e, PhysicalObject po)
@@ -113,12 +113,11 @@ namespace ObjectInteractionSimulator
             path.AddEllipse(rect);
             PathGradientBrush pthGrBrush = new PathGradientBrush(path);
 
-            //center color should be brghter; to make darker - lower values proportionally
+            //center color should be brghter; to make edges darker - lower values proportionally
             pthGrBrush.CenterColor = Color.FromArgb(255, po.Color.Item1, po.Color.Item2, po.Color.Item3);
-            Color[] colors = { Color.FromArgb(255, po.Color.Item1 / 5 * 3, po.Color.Item2 / 5 * 3, po.Color.Item3 / 5 * 3) };
+            Color[] colors = { Color.FromArgb(255, po.Color.Item1 / 10 * 8, po.Color.Item2 / 10 * 8, po.Color.Item3 / 10 * 8) };
             pthGrBrush.SurroundColors = colors;
 
-            //SolidBrush brush = new SolidBrush(ColorTranslator.FromHtml("#ff00ff"));
             graphics.FillEllipse(pthGrBrush, rect);
         }
 
@@ -175,18 +174,12 @@ namespace ObjectInteractionSimulator
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            //objects.ForEach((item) => MoveObject(item));
             if(GravityToggle.Checked)
                 objects.ForEach((item) => gravity.ApplyGravityOn(item));
 
             DetectCollisions();
 
             objects.ForEach((item) => MoveObject(item));
-
-            //tick every 15 ms; acc = how much speed is gained in 15 ms;
-            //y = 6.67 * 10^(-11)N.m^2/kg^2
-            //F = y * (m1 * m2) / r^2
-            //F = ma
         }
 
         private void DetectCollisions()
@@ -212,9 +205,9 @@ namespace ObjectInteractionSimulator
         private void AddObject(float centerX, float centerY, float angle, float speed, float radius, float mass, int r, int g, int b)
         {
             //check validity of parameters
-            if (radius < 0 || radius > 50)
+            if (radius <= 0 || radius > MAX_RADIUS)
             {
-                radius = GetRandValue(5, 50);
+                radius = GetRandValue(5, MAX_RADIUS);
             }
             if (centerX < radius || centerX > this.ClientSize.Width - radius - menu.Width)
             {
@@ -228,9 +221,9 @@ namespace ObjectInteractionSimulator
             {
                 angle = GetRandValue(0, 360);
             }
-            if (speed < 0 || speed > 20)//Speed maxed at 300; TODO: make global
+            if (speed < 0 || speed > MAX_SPEED)//
             {
-                speed = GetRandValue(0, 20);
+                speed = GetRandValue(0, MAX_SPEED);
             }
             if (mass < 0) //no upper bound
             {
@@ -305,16 +298,6 @@ namespace ObjectInteractionSimulator
 
         }
 
-        //private void Set_Interval_Click(object sender, EventArgs e)
-        //{
-        //    int i;
-        //    int.TryParse(Enter_Interval.Text, out i);
-        //    if (i == 0)
-        //        i = 15;
-        //    timer.Interval = i;
-        //    Interval_Label.Text = i.ToString();
-        //}
-
         private void addObjectButton_Click(object sender, EventArgs e)
         {
             if(ToFloat(numberToAdd.Text.ToString()) < 0) { 
@@ -344,9 +327,8 @@ namespace ObjectInteractionSimulator
 
         private int FindObjectIndex(String x, String y)
         {
-            float fx, fy;
-            float.TryParse(x, out fx);
-            float.TryParse(y, out fy);
+            float.TryParse(x, out float fx);
+            float.TryParse(y, out float fy);
             for(int i = 0; i<objects.Count ; ++i)
             {
                 if (dist2(objects[i].CenterX - fx, objects[i].CenterY - fy) < (objects[i].Radius) * (objects[i].Radius))
@@ -374,9 +356,9 @@ namespace ObjectInteractionSimulator
                 int blue = (int)ToFloat(bBoxMod.Text.ToString());
 
                 //check the entered values
-                if (r < 0 || r > 50)
+                if (r <= 0 || r > MAX_RADIUS)
                 {
-                    r = GetRandValue(5, 50);
+                    r = GetRandValue(5, MAX_RADIUS);
                 }
                 if (x < r || x > this.ClientSize.Width - r - menu.Width)
                 {
@@ -390,9 +372,9 @@ namespace ObjectInteractionSimulator
                 {
                     a = GetRandValue(0, 360);
                 }
-                if (s < 0 || s > 20)//Speed maxed at 300; TODO: make global
+                if (s < 0 || s > MAX_SPEED)
                 {
-                    s = GetRandValue(0, 20);
+                    s = GetRandValue(0, MAX_SPEED);
                 }
                 if (m < 0) //no upper bound
                 {
@@ -439,7 +421,6 @@ namespace ObjectInteractionSimulator
                 bBoxMod.Text = objects[currentObjectIndex].Color.Item3.ToString();
 
             }
-            //currentObjectIndex = -1;
             Invalidate();
         }
 
@@ -447,7 +428,6 @@ namespace ObjectInteractionSimulator
         {
             Point relativePoint = this.PointToClient(Cursor.Position);
             int index = FindObjectIndex(relativePoint.X.ToString(), relativePoint.Y.ToString());
-            //Interval_Label.Text = index.ToString();
             if(index >= 0)
             {
                 centerXMod.Text = objects[index].CenterX.ToString();
@@ -459,9 +439,6 @@ namespace ObjectInteractionSimulator
                 rBoxMod.Text = objects[index].Color.Item1.ToString();
                 gBoxMod.Text = objects[index].Color.Item2.ToString();
                 bBoxMod.Text = objects[index].Color.Item3.ToString();
-                //populate textboxes
-                //OnButtonClick give it the index and run ModifyObject
-                //hold index in global variable or some lambda shit
             }
             else
             {
@@ -510,7 +487,6 @@ namespace ObjectInteractionSimulator
             {
                 ModifyObject();
             }
-            //currentObjectIndex = -1;
         }
 
         private void deleteObjectButton_Click(object sender, EventArgs e)
@@ -521,12 +497,7 @@ namespace ObjectInteractionSimulator
                 objects.RemoveAt(currentObjectIndex);
                 paintedObjects.RemoveAt(currentObjectIndex);
                 Invalidate();
-                centerXMod.Clear();
-                centerYMod.Clear();
-                angleMod.Clear();
-                speedMod.Clear();
-                radiusMod.Clear();
-                massMod.Clear();
+                ClearTextBoxes();
             }
             currentObjectIndex = -1;
         }
@@ -579,7 +550,5 @@ namespace ObjectInteractionSimulator
             constBox.Text = gravity_const.ToString();
             gravity.Gravity_Const = gravity_const;
         }
-        //TODO: use grav_const in Gravity class
-        //TODO: if grav_const is negative +180deg the force angle in the Gravity class
     }
 }

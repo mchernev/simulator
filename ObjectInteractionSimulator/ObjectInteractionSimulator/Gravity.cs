@@ -36,16 +36,16 @@ namespace ObjectInteractionSimulator
         {
             for(int i = 0; i < list.Count; ++i)
             {
-                Console.WriteLine("grav force " + CalculateGravitationalForce(po, list[i]));
-                Console.WriteLine("grav force angle " + CalculateForceAngle(po, list[i]));
+                //Console.WriteLine("grav force " + CalculateGravitationalForce(po, list[i]));
+                //Console.WriteLine("grav force angle " + CalculateForceAngle(po, list[i]));
                 AddToVector(CalculateGravitationalForce(po, list[i]) / po.Mass, CalculateForceAngle(po, list[i]));
             }
-            Console.WriteLine("force size  " + vector.Item1);
-            Console.WriteLine("force angle " + vector.Item2);
+            //Console.WriteLine("force size  " + vector.Item1);
+            //Console.WriteLine("force angle " + vector.Item2);
             AddToVector(po.Speed, po.Angle);
             po.SetAxisSpeeds(vector.Item2, vector.Item1);
-            Console.WriteLine("New Speed " + vector.Item1);
-            Console.WriteLine("New Angle " + vector.Item2);
+            //Console.WriteLine("New Speed " + vector.Item1);
+            //Console.WriteLine("New Angle " + vector.Item2);
             vector = new Tuple<float, float>(0, 0);//nullify vector
         }
 
@@ -109,12 +109,6 @@ namespace ObjectInteractionSimulator
 
             vector = new Tuple<float, float>(newSize, newAngle);
         }
-
-        //adds the force vector to the objects movement vector
-        //private void AddVectorToDirection(PhysicalObject po)
-        //{
-
-        //}
 
         //calculates the angle the new combined vector (old combined + new force) using its coordinates
         private float CalculateAngle(float size, float angle)

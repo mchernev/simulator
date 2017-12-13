@@ -32,6 +32,10 @@
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.control = new System.Windows.Forms.Button();
             this.menu = new System.Windows.Forms.Panel();
+            this.deafultConst = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.setConst = new System.Windows.Forms.Button();
+            this.constBox = new System.Windows.Forms.TextBox();
             this.gravityLabel = new System.Windows.Forms.Label();
             this.GravityToggle = new System.Windows.Forms.CheckBox();
             this.settings = new System.Windows.Forms.TabControl();
@@ -79,10 +83,6 @@
             this.angleMod = new System.Windows.Forms.TextBox();
             this.centerYMod = new System.Windows.Forms.TextBox();
             this.centerXMod = new System.Windows.Forms.TextBox();
-            this.constBox = new System.Windows.Forms.TextBox();
-            this.setConst = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.deafultConst = new System.Windows.Forms.Button();
             this.menu.SuspendLayout();
             this.settings.SuspendLayout();
             this.add.SuspendLayout();
@@ -126,6 +126,42 @@
             this.menu.Name = "menu";
             this.menu.Size = new System.Drawing.Size(390, 805);
             this.menu.TabIndex = 4;
+            // 
+            // deafultConst
+            // 
+            this.deafultConst.Location = new System.Drawing.Point(292, 125);
+            this.deafultConst.Name = "deafultConst";
+            this.deafultConst.Size = new System.Drawing.Size(75, 23);
+            this.deafultConst.TabIndex = 10;
+            this.deafultConst.Text = "Deafault";
+            this.deafultConst.UseVisualStyleBackColor = true;
+            this.deafultConst.Click += new System.EventHandler(this.deafultConst_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(29, 130);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(110, 13);
+            this.label14.TabIndex = 9;
+            this.label14.Text = "Gravitational constant";
+            // 
+            // setConst
+            // 
+            this.setConst.Location = new System.Drawing.Point(246, 125);
+            this.setConst.Name = "setConst";
+            this.setConst.Size = new System.Drawing.Size(40, 23);
+            this.setConst.TabIndex = 8;
+            this.setConst.Text = "Set";
+            this.setConst.UseVisualStyleBackColor = true;
+            this.setConst.Click += new System.EventHandler(this.setConst_Click);
+            // 
+            // constBox
+            // 
+            this.constBox.Location = new System.Drawing.Point(147, 127);
+            this.constBox.Name = "constBox";
+            this.constBox.Size = new System.Drawing.Size(93, 20);
+            this.constBox.TabIndex = 7;
             // 
             // gravityLabel
             // 
@@ -249,6 +285,7 @@
             // bBox
             // 
             this.bBox.Location = new System.Drawing.Point(229, 318);
+            this.bBox.MaxLength = 3;
             this.bBox.Name = "bBox";
             this.bBox.Size = new System.Drawing.Size(46, 20);
             this.bBox.TabIndex = 17;
@@ -256,6 +293,7 @@
             // gBox
             // 
             this.gBox.Location = new System.Drawing.Point(177, 318);
+            this.gBox.MaxLength = 3;
             this.gBox.Name = "gBox";
             this.gBox.Size = new System.Drawing.Size(46, 20);
             this.gBox.TabIndex = 16;
@@ -263,6 +301,7 @@
             // rBox
             // 
             this.rBox.Location = new System.Drawing.Point(125, 318);
+            this.rBox.MaxLength = 3;
             this.rBox.Name = "rBox";
             this.rBox.Size = new System.Drawing.Size(46, 20);
             this.rBox.TabIndex = 15;
@@ -418,7 +457,7 @@
             this.modify.Location = new System.Drawing.Point(4, 54);
             this.modify.Name = "modify";
             this.modify.Padding = new System.Windows.Forms.Padding(3);
-            this.modify.Size = new System.Drawing.Size(377, 614);
+            this.modify.Size = new System.Drawing.Size(377, 580);
             this.modify.TabIndex = 1;
             this.modify.Text = "Modify Object";
             this.modify.UseVisualStyleBackColor = true;
@@ -592,42 +631,6 @@
             this.centerXMod.Name = "centerXMod";
             this.centerXMod.Size = new System.Drawing.Size(100, 20);
             this.centerXMod.TabIndex = 1;
-            // 
-            // constBox
-            // 
-            this.constBox.Location = new System.Drawing.Point(147, 127);
-            this.constBox.Name = "constBox";
-            this.constBox.Size = new System.Drawing.Size(93, 20);
-            this.constBox.TabIndex = 7;
-            // 
-            // setConst
-            // 
-            this.setConst.Location = new System.Drawing.Point(246, 125);
-            this.setConst.Name = "setConst";
-            this.setConst.Size = new System.Drawing.Size(40, 23);
-            this.setConst.TabIndex = 8;
-            this.setConst.Text = "Set";
-            this.setConst.UseVisualStyleBackColor = true;
-            this.setConst.Click += new System.EventHandler(this.setConst_Click);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(29, 130);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(110, 13);
-            this.label14.TabIndex = 9;
-            this.label14.Text = "Gravitational constant";
-            // 
-            // deafultConst
-            // 
-            this.deafultConst.Location = new System.Drawing.Point(292, 125);
-            this.deafultConst.Name = "deafultConst";
-            this.deafultConst.Size = new System.Drawing.Size(75, 23);
-            this.deafultConst.TabIndex = 10;
-            this.deafultConst.Text = "Deafault";
-            this.deafultConst.UseVisualStyleBackColor = true;
-            this.deafultConst.Click += new System.EventHandler(this.deafultConst_Click);
             // 
             // Simulator
             // 
